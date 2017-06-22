@@ -18,7 +18,7 @@ int main() {
            data. */
         curl_easy_setopt(curl, CURLOPT_URL, "http://webserverlemonade.herokuapp.com/sales");
         /* Now specify the POST data */
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"dfn\":3}");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"timestamp\" : \"24\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINNY\"}}");
 
         list = curl_slist_append(list, "content-Type:application/json");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
