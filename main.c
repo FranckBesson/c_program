@@ -1,38 +1,52 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <curl/curl.h>
+#include <sys/fcntl.h>
+#include <unistd.h>
+
 
 int main() {
-    CURL *curl;
-    CURLcode res;
+    while (1) {
+        printf("\n");
+        CURL *curl;
+        CURLcode res;
+        int fd;
+        int test = 0;
+        char buf[255];
 
-    /* In windows, this will init the winsock stuff */
-    curl_global_init(CURL_GLOBAL_ALL);
+        if ((fd = open("/dev/ttyACM1", O_RDWR)) == -1) {
+            perror("open");
+            exit(-1);
+        }
 
-    /* get a curl handle */
-    curl = curl_easy_init();
-    struct curl_slist *list = NULL;
+        curl_global_init(CURL_GLOBAL_ALL);
+        curl = curl_easy_init();
+        struct curl_slist *list = NULL;
 
-    if(curl) {
-        /* First set the URL that is about to receive our POST. This URL can
-           just as well be a https:// URL if that is what should receive the
-           data. */
-        curl_easy_setopt(curl, CURLOPT_URL, "http://webserverlemonade.herokuapp.com/sales");
-        /* Now specify the POST data */
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"timestamp\" : \"24\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINNY\"}}");
+        while (test == 0) {
+            int nb = read(fd, &buf, 255);
+            buf[nb] = '\0';
 
-        list = curl_slist_append(list, "content-Type:application/json");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+            if (nb > 0) {
+                printf("%s", buf);
+                test = 1;
+            }
+        }
+        if (curl) {
+            curl_easy_setopt(curl, CURLOPT_URL, "http://webserverlemonade.herokuapp.com/metrology");
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"timestamp\" : \"5648\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINY\"}}");
+            printf("{\"timestamp\" : \"5648\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINY\"}}\n");
 
-        /* Perform the request, res will get the return code */
-        res = curl_easy_perform(curl);
-        /* Check for errors */
-        if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                    curl_easy_strerror(res));
+            list = curl_slist_append(list, "content-Type:application/json");
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
 
-        /* always cleanup */
-        curl_easy_cleanup(curl);
+            res = curl_easy_perform(curl);
+            if (res != CURLE_OK)
+                fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            curl_easy_cleanup(curl);
+        }
+        curl_global_cleanup();
+        close(fd);
     }
-    curl_global_cleanup();
     return 0;
 }
