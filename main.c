@@ -14,7 +14,7 @@ int main() {
         int test = 0;
         char buf[255];
 
-        if ((fd = open("/dev/ttyACM1", O_RDWR)) == -1) {
+        if ((fd = open("/dev/ttyACM0", O_RDWR)) == -1) {
             perror("open");
             exit(-1);
         }
@@ -34,8 +34,8 @@ int main() {
         }
         if (curl) {
             curl_easy_setopt(curl, CURLOPT_URL, "http://webserverlemonade.herokuapp.com/metrology");
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"timestamp\" : \"5648\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINY\"}}");
-            printf("{\"timestamp\" : \"5648\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINY\"}}\n");
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"timestamp\" : \"165\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINY\"}}");
+            printf("{\"timestamp\" : \"165\",\"weather\" : {\"dfn\" : \"0\", \"weather\" : \"RAINY\"}}\n");
 
             list = curl_slist_append(list, "content-Type:application/json");
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
