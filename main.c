@@ -29,7 +29,7 @@ int main() {
 
 //=============== Program ==================//
 
-    if ((fd = open("/dev/ttyACM0", O_RDWR)) == -1) {    // Opening and check Serial Port File
+    if ((fd = open("/dev/ttyACM1", O_RDWR)) == -1) {    // Opening and check Serial Port File
         perror("open");
         exit(-1);
     }
