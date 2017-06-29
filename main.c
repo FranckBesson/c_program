@@ -29,7 +29,7 @@ int main() {
 
 //=============== Program ==================//
 
-    if ((fd = open("/dev/ttyACM1", O_RDWR)) == -1) {    // Opening and check Serial Port File
+    if ((fd = open("/dev/ttyACM0", O_RDWR)) == -1) {    // Opening and check Serial Port File
         perror("open");
         exit(-1);
     }
@@ -41,7 +41,7 @@ while (1){                                  // Loop while the time elapses
             close(fd);                      // Closing serial port file
             return 1;                       // Stop C program
         }
-        if (newChar[cpt] == '@'){           // '@' is the first character of
+        if (newChar[cpt] == '@'){           // '@' is the first character of serial transmission
             cpt = -1;
             for (int i = 0; i < 3; ++i) {
                 while (newChar[cpt] != ',' && newChar[cpt] != '#') {
